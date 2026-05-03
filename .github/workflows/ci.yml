@@ -1,0 +1,48 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # ------------------------
+    # 🟦 Setup .NET
+    # ------------------------
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore backend dependencies
+      run: dotnet restore
+      working-directory: ./International_Payments_Portal.Server
+
+    - name: Build backend
+      run: dotnet build --no-restore
+      working-directory: ./International_Payments_Portal.Server
+
+    # ------------------------
+    # 🟨 Setup Node (React)
+    # ------------------------
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install frontend dependencies
+      run: npm install
+      working-directory: ./international_payments_portal.client
+
+    - name: Build frontend
+      run: npm run build
+      working-directory: ./international_payments_portal.client
