@@ -1,0 +1,148 @@
+/**
+ * Authentication styles
+ * Shared styles for login and register pages
+ */
+
+export const authStyles = {
+    page: {
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #020818 0%, #0a1628 55%, #0d2045 100%)",
+        fontFamily: "'Inter', system-ui, sans-serif",
+        position: "relative",
+        overflow: "hidden",
+    },
+    orb: (w, top, left, delay, color) => ({
+        position: "absolute",
+        width: w,
+        height: w,
+        borderRadius: "50%",
+        top,
+        left,
+        background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
+        animation: `float 8s ease-in-out ${delay} infinite`,
+        pointerEvents: "none",
+    }),
+    card: {
+        width: 400,
+        borderRadius: 22,
+        padding: "40px 36px",
+        background: "linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))",
+        backdropFilter: "blur(28px)",
+        WebkitBackdropFilter: "blur(28px)",
+        border: "1px solid rgba(99,179,237,0.13)",
+        boxShadow: "0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
+        position: "relative",
+        zIndex: 1,
+        animation: "fadeInUp 0.55s cubic-bezier(0.16,1,0.3,1) both",
+    },
+    cardWide: {
+        width: 420,
+        borderRadius: 22,
+        padding: "40px 36px",
+        background: "linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))",
+        backdropFilter: "blur(28px)",
+        WebkitBackdropFilter: "blur(28px)",
+        border: "1px solid rgba(99,179,237,0.13)",
+        boxShadow: "0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
+        position: "relative",
+        zIndex: 1,
+        animation: "fadeInUp 0.55s cubic-bezier(0.16,1,0.3,1) both",
+    },
+    label: {
+        color: "#64748b",
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.07em",
+        textTransform: "uppercase",
+        display: "block",
+        marginBottom: 6,
+    },
+    inputWrap: {
+        position: "relative",
+        marginBottom: 14,
+    },
+    iconSlot: {
+        position: "absolute",
+        left: 13,
+        top: "50%",
+        transform: "translateY(-50%)",
+        color: "#475569",
+        display: "flex",
+        pointerEvents: "none",
+    },
+    input: {
+        width: "100%",
+        padding: "11px 14px 11px 42px",
+        background: "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(99,179,237,0.13)",
+        borderRadius: 10,
+        color: "#e2e8f0",
+        fontSize: 14,
+        outline: "none",
+        boxSizing: "border-box",
+        transition: "border-color 0.2s, box-shadow 0.2s",
+    },
+    btn: {
+        width: "100%",
+        padding: "13px",
+        border: "none",
+        borderRadius: 11,
+        color: "white",
+        fontSize: 15,
+        fontWeight: 600,
+        cursor: "pointer",
+        background: "linear-gradient(90deg,#1e40af,#2563eb,#38bdf8,#2563eb,#1e40af)",
+        backgroundSize: "250% 100%",
+        animation: "shimmer 3.5s linear infinite",
+        letterSpacing: "0.03em",
+        transition: "transform 0.15s, box-shadow 0.2s",
+        boxShadow: "0 4px 20px rgba(37,99,235,0.4)",
+    },
+    errBox: {
+        background: "rgba(239,68,68,0.1)",
+        border: "1px solid rgba(239,68,68,0.25)",
+        borderRadius: 10,
+        padding: "10px 14px",
+        marginBottom: 18,
+        color: "#fca5a5",
+        fontSize: 13,
+    },
+    link: {
+        color: "#60a5fa",
+        cursor: "pointer",
+        fontWeight: 600,
+    },
+    title: {
+        color: "#e2e8f0",
+        fontSize: 28,
+        fontWeight: 700,
+        marginBottom: 6,
+        letterSpacing: "-0.5px",
+    },
+    subtitle: {
+        color: "#94a3b8",
+        fontSize: 13,
+        marginBottom: 28,
+        fontWeight: 500,
+    },
+    footer: {
+        marginTop: 18,
+        color: "#94a3b8",
+        fontSize: 13,
+        textAlign: "center",
+    },
+};
+
+// Input focus/blur handlers
+export const handleInputFocus = (e) => {
+    e.target.style.borderColor = "rgba(59,130,246,0.6)";
+    e.target.style.boxShadow = "0 0 0 3px rgba(59,130,246,0.12)";
+};
+
+export const handleInputBlur = (e) => {
+    e.target.style.borderColor = "rgba(99,179,237,0.13)";
+    e.target.style.boxShadow = "none";
+};

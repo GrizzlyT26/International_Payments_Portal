@@ -1,0 +1,6 @@
+@International_Payments_Portal.Server_HostAddress = http://localhost:5241
+
+GET {{International_Payments_Portal.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

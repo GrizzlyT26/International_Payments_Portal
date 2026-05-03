@@ -1,0 +1,9 @@
+export { MailIcon } from './MailIcon';
+export { LockIcon } from './LockIcon';
+export { GlobeIcon } from './GlobeIcon';
+export { UserIcon } from './UserIcon';
+export { BankIcon } from './BankIcon';
+export { SwiftIcon } from './SwiftIcon';
+export { AmountIcon } from './AmountIcon';
+export { NoteIcon } from './NoteIcon';
+export { LogoutIcon } from './LogoutIcon';

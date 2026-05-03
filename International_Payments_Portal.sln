@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37203.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "international_payments_portal.client", "international_payments_portal.client\international_payments_portal.client.esproj", "{4A9881FB-F7E4-817A-EB88-A66B64B0E242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "International_Payments_Portal.Server", "International_Payments_Portal.Server\International_Payments_Portal.Server.csproj", "{102087C3-A1F0-4AF5-9437-59ED40C12D00}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A9881FB-F7E4-817A-EB88-A66B64B0E242}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{102087C3-A1F0-4AF5-9437-59ED40C12D00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102087C3-A1F0-4AF5-9437-59ED40C12D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102087C3-A1F0-4AF5-9437-59ED40C12D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102087C3-A1F0-4AF5-9437-59ED40C12D00}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DCDC85B-5615-4A8F-8B03-2BA30DA617F8}
+	EndGlobalSection
+EndGlobal

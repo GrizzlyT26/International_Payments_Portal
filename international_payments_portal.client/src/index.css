@@ -1,0 +1,92 @@
+﻿/* ✅ TAILWIND (MUST BE AT THE VERY TOP) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== GLOBAL STYLES ===== */
+@import './shared/styles/globals.css';
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: #020818; font-family: 'Inter', system-ui, sans-serif; }
+#root { width: 100%; max-width: 100%; margin: 0; padding: 0; min-height: 100vh; }
+
+/* ===== KEYFRAME ANIMATIONS ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0)    scale(1);    }
+    50%       { transform: translateY(-22px) scale(1.04); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg);   }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(59,130,246,0.5); }
+    50%       { box-shadow: 0 0 20px 6px rgba(59,130,246,0.2); }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.animate-fadeInUp  { animation: fadeInUp 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+.animate-float     { animation: float 7s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 12s linear infinite; }
+
+.btn-shimmer {
+    background: linear-gradient(90deg, #1e40af, #2563eb, #38bdf8, #2563eb, #1e40af);
+    background-size: 250% 100%;
+    animation: shimmer 3.5s linear infinite;
+}
+
+.btn-shimmer:hover { animation-play-state: paused; filter: brightness(1.1); }
+
+/* placeholder colour */
+.input-dark::placeholder { color: #475569; }
+.input-dark:focus { outline: none; border-color: rgba(59,130,246,0.65) !important; }
+
+/* thin scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a1628; }
+::-webkit-scrollbar-thumb { background: #1d4ed8; border-radius: 3px; }
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2 {
+    font-weight: 500;
+    color: var(--text-h);
+}
+
+h1 {
+    font-size: 48px;
+    margin: 20px 0;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.6s ease-out;
+}
