@@ -1,48 +1,93 @@
-name: CI Pipeline
+name: Full CI Pipeline
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches:
+      - main
+      - master
+
   pull_request:
-    branches: [ "main", "master"]
+    branches:
+      - main
+      - master
 
 jobs:
-  build:
+  build-and-security:
+    name: Build + Security Checks
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # ---------------------------------
+      # Checkout Repository
+      # ---------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # ------------------------
-    # 🟦 Setup .NET
-    # ------------------------
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      # ---------------------------------
+      # Setup .NET
+      # ---------------------------------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore backend dependencies
-      run: dotnet restore
-      working-directory: ./International_Payments_Portal.Server
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: Build backend
-      run: dotnet build --no-restore
-      working-directory: ./International_Payments_Portal.Server
+      - name: Restore backend dependencies
+        run: dotnet restore
+        working-directory: ./International_Payments_Portal.Server
 
-    # ------------------------
-    # 🟨 Setup Node (React)
-    # ------------------------
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Build backend
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./International_Payments_Portal.Server
 
-    - name: Install frontend dependencies
-      run: npm install
-      working-directory: ./international_payments_portal.client
+      # ---------------------------------
+      # Setup Node.js
+      # ---------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: ./international_payments_portal.client/package-lock.json
 
-    - name: Build frontend
-      run: npm run build
-      working-directory: ./international_payments_portal.client
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./international_payments_portal.client
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./international_payments_portal.client
+
+      # ---------------------------------
+      # Security Checks
+      # ---------------------------------
+      - name: Run npm security audit
+        run: npm audit --audit-level=high || true
+        working-directory: ./international_payments_portal.client
+
+      - name: Check .NET vulnerable packages
+        run: dotnet list package --vulnerable
+        working-directory: ./International_Payments_Portal.Server
+
+      # ---------------------------------
+      # Upload Build Artifacts
+      # ---------------------------------
+      - name: Upload frontend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build
+          path: ./international_payments_portal.client/dist
+
+      - name: Upload backend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: ./International_Payments_Portal.Server/bin/Release
+
