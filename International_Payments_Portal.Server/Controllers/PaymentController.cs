@@ -2,6 +2,7 @@
 using International_Payments_Portal.Server.Models;
 using International_Payments_Portal.Server.Services;
 using International_Payments_Portal.Server.Data;
+using System.Linq;
 
 namespace International_Payments_Portal.Server.Controllers
 {
@@ -71,6 +72,40 @@ namespace International_Payments_Portal.Server.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpGet("transactions")]
+        public IActionResult GetTransactions()
+        {
+            var transactions = _context.Payments
+                .Join(
+                    _context.Users,
+                    payment => payment.UserId,
+                    user => user.Id,
+                    (payment, user) => new
+                    {
+                        payment.Id,
+                        payment.UserId,
+                        payment.ReceiverIBAN,
+                        payment.ReceiverSWIFT,
+                        payment.Amount,
+                        payment.Currency,
+                        payment.Description,
+                        payment.Status,
+                        payment.TransactionId,
+                        payment.Fee,
+                        AccountHolder = user.FullName,
+                        TransactionDate = payment.CreatedAt
+                    }
+                )
+                .OrderByDescending(p => p.TransactionDate)
+                .ToList();
+
+            return Ok(new
+            {
+                success = true,
+                data = transactions
+            });
         }
     }
 }

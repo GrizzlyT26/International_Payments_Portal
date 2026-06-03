@@ -5,6 +5,7 @@
 export const AUTH_ENDPOINTS = {
     REGISTER: '/Auth/register',
     LOGIN: '/Auth/login',
+    STAFF_LOGIN: '/Auth/staff-login',
 };
 
 export const AUTH_STORAGE_KEYS = {
