@@ -11,6 +11,7 @@ import { validatePaymentForm } from '../validation/paymentValidation';
 import { CURRENCIES } from '../constants/paymentConstants';
 import { getPaymentProviders } from './getPaymentProviders';
 import { usePayment } from '../hooks/usePayment';
+import { storage } from '../../../shared/utils/localStorage';
 
 export const PaymentForm = () => {
     const navigate = useNavigate();
@@ -50,13 +51,21 @@ export const PaymentForm = () => {
 
         setFieldErrors({});
 
+        // Attach logged-in user id to payment payload (falls back to 1)
+        const currentUser = storage.getUser();
+        const paymentPayload = {
+            ...formData,
+            userId: currentUser?.Id ?? currentUser?.id ?? 1
+        };
+
         // Process payment through API
-        const result = await processPayment(formData);
+        const result = await processPayment(paymentPayload);
 
         if (result && !error) {
-            // Prepare user data for verification (you can get this from auth context)
+            // Prepare user data for verification (use stored auth user if available)
+            const storedUser = storage.getUser();
             const userData = {
-                name: localStorage.getItem('userName') || 'Kamogelo Sithole',
+                name: storedUser?.FullName || localStorage.getItem('userName') || 'Kamogelo Sithole',
                 accountNumber: localStorage.getItem('accountNumber') || '          4821',
                 branchCode: localStorage.getItem('branchCode') || '632005',
                 accountType: localStorage.getItem('accountType') || 'Cheque'

@@ -30,11 +30,13 @@ export const authService = {
     },
 
     /**
-     * Login user
+     * Login user or staff member
      */
     login: async (credentials) => {
+        const endpoint = credentials.role === 'staff' ? AUTH_ENDPOINTS.STAFF_LOGIN : AUTH_ENDPOINTS.LOGIN;
+
         try {
-            const response = await apiClient.post(AUTH_ENDPOINTS.LOGIN, {
+            const response = await apiClient.post(endpoint, {
                 Email: credentials.email,
                 Password: credentials.password,
             });
@@ -56,6 +58,7 @@ export const authService = {
     logout: () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('userRole');
     },
 };
 
