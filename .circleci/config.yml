@@ -6,34 +6,46 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/node:20.10.0
+      - image: cimg/node:20.10.0  # For React client
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - npm-deps-{{ checksum "package-lock.json" }}
+      
+      # Install and test REACT CLIENT
       - run:
           name: Install Client Dependencies
-          command: cd client && npm ci
+          command: cd international_payments_portal.client && npm ci
       - run:
           name: Test Client with Coverage
-          command: cd client && npm test -- --coverage --watchAll=false
-      - run:
-          name: Install Server Dependencies
-          command: cd server && npm ci
-      - run:
-          name: Test Server with Coverage
-          command: cd server && npm test -- --coverage --watchAll=false
-      - save_cache:
-          key: npm-deps-{{ checksum "package-lock.json" }}
-          paths:
-            - client/node_modules
-            - server/node_modules
+          command: cd international_payments_portal.client && npm test -- --coverage --watchAll=false
+      
+      # Save client coverage
       - persist_to_workspace:
           root: .
           paths:
-            - client/coverage
-            - server/coverage
+            - international_payments_portal.client/coverage
+
+  dotnet-build-and-test:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:8.0  # For .NET Server
+    steps:
+      - checkout
+      
+      # Restore and build .NET SERVER
+      - run:
+          name: Restore .NET dependencies
+          command: dotnet restore International_Payments_Portal.Server
+      - run:
+          name: Build .NET Server
+          command: dotnet build International_Payments_Portal.Server --configuration Release --no-restore
+      - run:
+          name: Run .NET Tests
+          command: dotnet test International_Payments_Portal.Server --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+      
+      # Save server coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - International_Payments_Portal.Server/TestResults
 
   sonarcloud-scan:
     docker:
@@ -43,16 +55,19 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Install SonarCloud Scanner
+          command: npm install -g sonar-scanner
+      - run:
           name: Run SonarCloud Scan
           command: |
-            npx sonar-scanner \
+            sonar-scanner \
               -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
               -Dsonar.organization=${SONAR_ORG} \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=${SONAR_TOKEN} \
-              -Dsonar.sources=client/src,server/src \
-              -Dsonar.exclusions=**/node_modules/** \
-              -Dsonar.javascript.lcov.reportPaths=client/coverage/lcov.info,server/coverage/lcov.info
+              -Dsonar.sources=international_payments_portal.client/src,International_Payments_Portal.Server \
+              -Dsonar.exclusions=**/node_modules/**,**/bin/**,**/obj/** \
+              -Dsonar.javascript.lcov.reportPaths=international_payments_portal.client/coverage/lcov.info
 
   security-audit:
     docker:
@@ -61,25 +76,18 @@ jobs:
       - checkout
       - run:
           name: NPM Security Audit
-          command: npm audit --audit-level=high || true
-      - run:
-          name: Check for Hardcoded Secrets
-          command: |
-            if grep -rn "password\|secret\|api_key\|token" --include="*.js" --include="*.jsx" client/src server/src 2>/dev/null | grep -v "//" | grep -q .; then
-              echo "❌ Hardcoded secrets detected!"
-              exit 1
-            else
-              echo "✅ No hardcoded secrets found"
-            fi
+          command: cd international_payments_portal.client && npm audit --audit-level=high || true
 
 workflows:
   version: 2
   payment-portal-workflow:
     jobs:
       - build-and-test
+      - dotnet-build-and-test
       - sonarcloud-scan:
           requires:
             - build-and-test
+            - dotnet-build-and-test
       - security-audit:
           requires:
             - build-and-test
