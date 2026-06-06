@@ -47,19 +47,33 @@ export const PaymentPortal = () => {
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        style={paymentStyles.logoutBtn}
-                        onMouseEnter={(e) => {
-                            e.target.style.background = 'rgba(239,68,68,0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.background = 'rgba(239,68,68,0.1)';
-                        }}
-                    >
-                        <LogoutIcon /> Logout
-
-                    </button>
+                    <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/customer-transactions')}
+                            style={{
+                                ...paymentStyles.logoutBtn,
+                                marginLeft: 0,
+                                color: '#93c5fd',
+                                background: 'rgba(59,130,246,0.1)',
+                                borderColor: 'rgba(59,130,246,0.25)',
+                            }}
+                        >
+                            View Transactions
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            style={{ ...paymentStyles.logoutBtn, marginLeft: 0 }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = 'rgba(239,68,68,0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
+                            }}
+                        >
+                            <LogoutIcon /> Logout
+                        </button>
+                    </div>
                 </div>
 
                 {/* Payment Form */}

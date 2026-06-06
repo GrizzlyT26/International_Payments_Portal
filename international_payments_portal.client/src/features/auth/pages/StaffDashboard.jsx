@@ -4,12 +4,14 @@
  */
 
 import { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { storage } from '../../../shared/utils/localStorage';
 import { authStyles } from '../styles/authStyles';
 import apiClient from '../../../shared/utils/apiClient';
 
 export const StaffDashboard = () => {
+    const navigate = useNavigate();
     const { logout } = useAuth();
     const user = storage.getUser();
     const [showTransactions, setShowTransactions] = useState(true);
@@ -162,6 +164,45 @@ export const StaffDashboard = () => {
                         )}
                     </div>
                 )}
+
+                {/* Staff Verification Button */}
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: 30,
+                        paddingTop: 24,
+                        borderTop: '1px solid rgba(148,163,184,0.15)',
+                    }}
+                >
+                    <button
+                        type="button"
+                        onClick={() => navigate('/staff-verification')}
+                        style={{
+                            background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: '14px',
+                            padding: '14px 40px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            minWidth: '260px',
+                            boxShadow: '0 8px 20px rgba(37,99,235,0.30)',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 12px 28px rgba(37,99,235,0.40)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 8px 20px rgba(37,99,235,0.30)';
+                        }}
+                    >
+                        Staff Verification →
+                    </button>
+                </div>
             </div>
         </div>
     );

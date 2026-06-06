@@ -118,9 +118,10 @@ namespace International_Payments_Portal.Server.Controllers
             // 🔥 HARDCODED STAFF CREDENTIALS
             var validStaffCredentials = new[]
             {
-                new { Email = "ST10439724@rcconnect.edu.za", Password = "internationalP@47" },
+                new { Email = "st10439724@rcconnect.edu.za", Password = "internationalP@47" },
                 new { Email = "st10503750@rcconnect.edu.za", Password = "internationalP@47" },
-                new {Email ="st10108083@rcconnect.edu.za", Password = "internationalP@47"}
+                new { Email ="st10108083@rcconnect.edu.za", Password = "internationalP@47" },
+                new { Email = "st10501179@rcconnect.edu.za", Password = "internationalP@47" }
             };
 
             var staffMember = validStaffCredentials
