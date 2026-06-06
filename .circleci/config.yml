@@ -46,17 +46,14 @@ jobs:
           paths:
             - International_Payments_Portal.Server
 
-  # SonarCloud Quality Scan
+  # SonarCloud Quality Scan (using official Docker image)
   sonarcloud-scan:
     docker:
-      - image: cimg/node:20.10.0
+      - image: sonarsource/sonar-scanner-cli:latest
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Install SonarCloud Scanner
-          command: npm install -g sonar-scanner
       - run:
           name: Run SonarCloud Scan
           command: |
@@ -66,9 +63,7 @@ jobs:
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=${SONAR_TOKEN} \
               -Dsonar.sources=international_payments_portal.client/src,International_Payments_Portal.Server \
-              -Dsonar.exclusions=**/node_modules/**,**/bin/**,**/obj/**,**/wwwroot/** \
-              -Dsonar.javascript.file.suffixes=.js,.jsx,.ts,.tsx \
-              -Dsonar.cs.opencover.reportsPaths=**/TestResults/**/coverage.opencover.xml
+              -Dsonar.exclusions=**/node_modules/**,**/bin/**,**/obj/**,**/wwwroot/**
 
   # Security Audit
   security-audit:
