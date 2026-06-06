@@ -12,7 +12,9 @@
         public string Status { get; set; } = "Pending";
         public string? TransactionId { get; set; }
         public decimal? Fee { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? ReviewedAt { get; set; }
+        public string? ReviewedBy { get; set; }
+        public string? ReviewNotes { get; set; }
     }
 }

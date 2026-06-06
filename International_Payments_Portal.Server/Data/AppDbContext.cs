@@ -13,5 +13,16 @@ namespace International_Payments_Portal.Server.Data
 
         //new test if it doesnt break 
         public DbSet<CustomerDetail> CustomerDetails { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.Property(payment => payment.Amount).HasPrecision(18, 2);
+                entity.Property(payment => payment.Fee).HasPrecision(18, 2);
+                entity.Property(payment => payment.ReviewedBy).HasMaxLength(255);
+                entity.Property(payment => payment.ReviewNotes).HasMaxLength(500);
+            });
+        }
     }
 }

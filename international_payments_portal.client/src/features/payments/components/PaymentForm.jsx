@@ -10,12 +10,10 @@ import { paymentStyles, handleInputFocus, handleInputBlur } from '../styles/paym
 import { validatePaymentForm } from '../validation/paymentValidation';
 import { CURRENCIES } from '../constants/paymentConstants';
 import { getPaymentProviders } from './getPaymentProviders';
-import { usePayment } from '../hooks/usePayment';
 import { storage } from '../../../shared/utils/localStorage';
 
 export const PaymentForm = () => {
     const navigate = useNavigate();
-    const { processPayment, loading, error, success, clearMessages } = usePayment();
     const [selectedProvider, setSelectedProvider] = useState('SWIFT');
     const [formData, setFormData] = useState({
         receiverIBAN: '',
@@ -40,7 +38,6 @@ export const PaymentForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        clearMessages();
 
         // Validate form
         const errors = validatePaymentForm(formData);
@@ -58,45 +55,33 @@ export const PaymentForm = () => {
             userId: currentUser?.Id ?? currentUser?.id ?? 1
         };
 
-        // Process payment through API
-        const result = await processPayment(paymentPayload);
+        // Prepare user data for the final customer confirmation step.
+        const storedUser = storage.getUser();
+        const userData = {
+            name: storedUser?.fullName || storedUser?.FullName || localStorage.getItem('userName') || 'Customer',
+            accountNumber: localStorage.getItem('accountNumber') || '          4821',
+            branchCode: localStorage.getItem('branchCode') || '632005',
+            accountType: localStorage.getItem('accountType') || 'Cheque'
+        };
 
-        if (result && !error) {
-            // Prepare user data for verification (use stored auth user if available)
-            const storedUser = storage.getUser();
-            const userData = {
-                name: storedUser?.FullName || localStorage.getItem('userName') || 'Kamogelo Sithole',
-                accountNumber: localStorage.getItem('accountNumber') || '          4821',
-                branchCode: localStorage.getItem('branchCode') || '632005',
-                accountType: localStorage.getItem('accountType') || 'Cheque'
-            };
+        const paymentData = {
+            ...paymentPayload,
+            paymentMethod: selectedProvider,
+            receiverIban: formData.receiverIBAN,
+            receiverSwiftCode: formData.receiverSWIFT,
+        };
 
-            // Prepare payment data for verification page
-            const paymentData = {
-                paymentMethod: selectedProvider,
-                receiverIban: formData.receiverIBAN,
-                receiverSwiftCode: formData.receiverSWIFT,
-                amount: formData.amount,
-                currency: formData.currency,
-                description: formData.description
-            };
-
-            // Navigate to verification page with payment data
-            navigate('/verification', {
-                state: {
-                    paymentData: paymentData,
-                    userData: userData
-                }
-            });
-        }
+        // The payment is only saved after the customer confirms on the next page.
+        navigate('/verification', {
+            state: {
+                paymentData,
+                userData
+            }
+        });
     };
 
     return (
         <form onSubmit={handleSubmit} noValidate>
-            {/* Error message */}
-            {error && <div style={paymentStyles.errBox}>{error}</div>}
-            {success && <div style={paymentStyles.successBox}>{success}</div>}
-
             {/* Payment Provider Selection */}
             <label style={{ ...paymentStyles.label, marginBottom: 12 }}>Payment Method</label>
             <div style={paymentStyles.providerGrid}>
@@ -255,15 +240,9 @@ export const PaymentForm = () => {
             {/* Submit Button */}
             <button
                 type="submit"
-                disabled={loading}
-                style={{
-                    ...paymentStyles.btn,
-                    marginTop: 24,
-                    opacity: loading ? 0.7 : 1,
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                }}
+                style={{ ...paymentStyles.btn, marginTop: 24 }}
             >
-                {loading ? 'Processing Payment...' : 'Continue to Verification'}
+                Continue to Verification
             </button>
         </form>
     );
