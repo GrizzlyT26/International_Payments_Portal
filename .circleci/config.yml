@@ -13,7 +13,7 @@ jobs:
       # Install and test REACT CLIENT
       - run:
           name: Install Client Dependencies
-          command: cd international_payments_portal.client && npm ci
+          command: cd international_payments_portal.client && npm install
       - run:
           name: Test Client with Coverage
           command: cd international_payments_portal.client && npm test -- --coverage --watchAll=false
@@ -26,7 +26,7 @@ jobs:
 
   dotnet-build-and-test:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:8.0  # For .NET Server
+      - image: mcr.microsoft.com/dotnet/sdk:9.0  # For .NET Server
     steps:
       - checkout
       
