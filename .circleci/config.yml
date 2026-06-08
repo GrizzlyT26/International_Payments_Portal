@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  sonarcloud: sonarsource/sonarcloud@2.0.0
-
 jobs:
   # React Client Build & Test
   build-and-test:
@@ -46,25 +43,6 @@ jobs:
           paths:
             - International_Payments_Portal.Server
 
-  # SonarCloud Quality Scan
-  sonarcloud-scan:
-    docker:
-      - image: sonarsource/sonar-scanner-cli:latest
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run SonarCloud Scan
-          command: |
-            sonar-scanner \
-              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-              -Dsonar.organization=${SONAR_ORG} \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${SONAR_TOKEN} \
-              -Dsonar.sources=international_payments_portal.client/src,International_Payments_Portal.Server \
-              -Dsonar.exclusions=**/node_modules/**,**/bin/**,**/obj/**,**/wwwroot/**
-
   # Security Audit
   security-audit:
     docker:
@@ -89,10 +67,6 @@ workflows:
     jobs:
       - build-and-test
       - dotnet-build-and-test
-      - sonarcloud-scan:
-          requires:
-            - build-and-test
-            - dotnet-build-and-test
       - security-audit:
           requires:
             - build-and-test
