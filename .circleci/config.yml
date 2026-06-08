@@ -46,7 +46,7 @@ jobs:
           paths:
             - International_Payments_Portal.Server
 
-  # SonarCloud Quality Scan (using official Docker image)
+  # SonarCloud Quality Scan
   sonarcloud-scan:
     docker:
       - image: sonarsource/sonar-scanner-cli:latest
@@ -77,12 +77,11 @@ jobs:
       - run:
           name: Check for Hardcoded Secrets
           command: |
-            if grep -rn "password\|secret\|api_key\|token" --include="*.js" --include="*.jsx" --include="*.cs" international_payments_portal.client/src International_Payments_Portal.Server 2>/dev/null | grep -v "//" | grep -q .; then
-              echo "❌ Hardcoded secrets detected!"
-              exit 1
-            else
-              echo "✅ No hardcoded secrets found"
-            fi
+            GITLEAKS_VERSION="8.24.2"
+            curl -sSfL \
+              "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+              | tar -xz -C /tmp gitleaks
+            /tmp/gitleaks detect --source . --no-git --redact --exit-code 1
 
 workflows:
   version: 2

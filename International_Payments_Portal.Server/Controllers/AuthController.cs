@@ -13,11 +13,12 @@ namespace International_Payments_Portal.Server.Controllers
         private readonly PasswordHasher _passwordHasher;
         private readonly InputValidator _validator;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        // ✅ Inject DbContext
-        public AuthController(AppDbContext context)
+        public AuthController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
             _passwordHasher = new PasswordHasher();
             _validator = new InputValidator();
         }
@@ -102,7 +103,7 @@ namespace International_Payments_Portal.Server.Controllers
             });
         }
 
-        // ✅ STAFF LOGIN (Hardcoded credentials)
+        // ✅ STAFF LOGIN
         [HttpPost("staff-login")]
         public IActionResult StaffLogin([FromBody] LoginModel model)
         {
@@ -115,19 +116,24 @@ namespace International_Payments_Portal.Server.Controllers
                 return BadRequest(new { message = "Email and password are required" });
             }
 
-            // 🔥 HARDCODED STAFF CREDENTIALS
-            var validStaffCredentials = new[]
+            var allowedEmails = _configuration
+                .GetSection("StaffAuth:AllowedEmails")
+                .Get<string[]>() ?? Array.Empty<string>();
+            var staffPassword = _configuration["StaffAuth:Password"];
+
+            if (allowedEmails.Length == 0 || string.IsNullOrWhiteSpace(staffPassword))
             {
-                new { Email = "st10439724@rcconnect.edu.za", Password = "internationalP@47" },
-                new { Email = "st10503750@rcconnect.edu.za", Password = "internationalP@47" },
-                new { Email ="st10108083@rcconnect.edu.za", Password = "internationalP@47" },
-                new { Email = "st10501179@rcconnect.edu.za", Password = "internationalP@47" }
-            };
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new
+                {
+                    message = "Staff login is not configured"
+                });
+            }
 
-            var staffMember = validStaffCredentials
-                .FirstOrDefault(s => s.Email.ToLower() == model.Email.ToLower() && s.Password == model.Password);
+            var staffEmail = allowedEmails.FirstOrDefault(email =>
+                string.Equals(email, model.Email, StringComparison.OrdinalIgnoreCase));
 
-            if (staffMember == null)
+            if (staffEmail == null ||
+                !string.Equals(staffPassword, model.Password, StringComparison.Ordinal))
                 return Unauthorized(new { message = "Invalid staff credentials" });
 
             return Ok(new
@@ -136,7 +142,7 @@ namespace International_Payments_Portal.Server.Controllers
                 user = new
                 {
                     Id = 0,
-                    Email = staffMember.Email,
+                    Email = staffEmail,
                     FullName = "Staff Member",
                     Role = "staff"
                 },
