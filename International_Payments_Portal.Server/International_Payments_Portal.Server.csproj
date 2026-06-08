@@ -7,6 +7,7 @@
 		<SpaRoot>.\international_payments_portal.client</SpaRoot>
 		<SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
 		<SpaProxyServerUrl>https://localhost:62034</SpaProxyServerUrl>
+		<UserSecretsId>international-payments-portal-server</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
